@@ -17,8 +17,11 @@
 				tb_remove();
     			Nim(player1, player2);
         	}
+        	function clickChoosePlayerLink() {
+        		$("#choose-player-link").click();
+        	}
         	$(document).ready(function() {  
-            	$("#choose-player-link").click();
+            	setTimeout("clickChoosePlayerLink()", 100);
         	 });
         </script>
         
@@ -27,15 +30,23 @@
         	body,div {margin: 0px; padding: 0px;}
         	#wrapper { width: 800px; margin:0 auto; }
         	#content, .buttons, #message-popup {text-align:center; }
-            #nim-board { display: table-cell; vertical-align:middle; height: 300px; border: 2px solid #000; width: 800px; margin: 0 auto;}
+            #nim-board { display: table-cell; vertical-align:middle; height: 200px; border: 2px solid #000; width: 800px; margin: 0 auto;}
             #nim-board input { margin: 5px; }
-            .checkbox { width: 20px; height: 20px;}
+            
             h1 {text-align:center}
            #choosePlayers { display: none;}
            fieldset { padding: 15px; }
            #message-box { padding:20px 10px; border: 2px solid #000; width:400px; height: 25px; text-align: center; margin: 0 auto;}
            #winnerMessage { text-align: center; padding: 20px;}
            .buttons input { padding: 3px; }
+           #debug { 
+           		font-family:monospace;
+           		border: 1px dotted #000;
+           		background-color:#ccc;
+           		height:300px;
+           		overflow:auto;
+           }
+           
         </style>
     </head>
     <body>
@@ -76,7 +87,9 @@
                 </form>
             </div>
             <div id="winnerMessage"></div>
+            
         </div>
+        <div id="debug"></div>
         
     </body>
 

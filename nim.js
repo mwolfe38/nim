@@ -2,80 +2,70 @@ function getRandom(min,max)
 {
     return (Math.round(Math.random()*(max-min)))+min;
 }
+function debug(debug_text) {
+	document.getElementById("debug").innerHTML += "<br />" + debug_text;
+}
 function Nim(player1, player2) {
     var board_id = 'nim-board';
     var board = document.getElementById(board_id);
-    var player = 1;
+    this.player = 1;
     var start_turn_checked = 0;
     var end_turn_button = document.getElementById('end-turn-button');
-    var total_heaps = getRandom(3,3);
-    var nim_objects = new Array();
+    var total_heaps = getRandom(3,5);
+    this.nim_objects = new Array();
     var computerAI = null;
-    this.get_nim_objects = function() {
-        return nim_objects;
-    }
+    var self =  this;
+    
     var init = function() {
         /* do some initial setup */
         var inputs = new Array();
         setup_board();
-        end_turn_button.controller = this;
+        
         end_turn_button.onclick = function() { 
-            this.controller.end_turn_button_handler()
+            self.end_turn_button_handler()
         }
         computerAI = new AI(this);
-        this.set_message("Player " + player + " its your turn");
+        this.set_message("Player " + self.player + " its your turn");
         player_go();
     }
-    var display_winning_message = function(player) {
-        var url = "#TB_inline?height=65&amp;width=300&amp;inlineId=winnerMessage&amp;modal=true"
-        $('#winnerMessage').html('<div id="message-popup"><h1>Player ' + player + ' Wins!!</h1><br /><a onclick="tb_remove();location.reload(true)">Close</a></div>');
+    this.display_winning_message = function() {
+    	alert('ok')
+        var url = "#TB_inline?height=65&amp;width=300&amp;inlineId=winnerMessage"
+        $('#winnerMessage').html('<div id="message-popup"><h1>Player ' + self.player + ' Wins!!</h1><br /><a onclick="tb_remove();">Close</a></div>');
         tb_show(null, url, null);
     }
     var determine_next_player = function() {
-        if (player == 1) {
-            player = 2
-            if (player2 == "computer") {
-                computers_turn = true;
-            }
+        if (self.player == 1) {
+        	self.player = 2
         } else {
-            player = 1
-            if (player1 == "computer") {
-                computers_turn = true;
-            }
-        }
-         if (computers_turn) {
-            computer_move();
+        	self.player = 1
         }
     }
     var player_go = function() {
-        if ((player == 1 && player1 == "computer") || (player == 2 && player2 == "computer")) {
-            computer_move();
+        if ((self.player == 1 && player1 == "computer") || (self.player == 2 && player2 == "computer")) {
+        	computerAI.move();
         }
     }
+    
     this.end_turn_button_handler = function() {
-        //alert('end turn player ' + player)
-        computers_turn = false;
+        debug('end turn player ' + self.player)
         if (all_heaps_checked()) {
-            display_winning_message(player)
+        	debug('game won by player ' + self.player);
+        	display_winning_message();
             return;
         }        
         start_turn_checked = 0;
         set_checkboxes_permanent();
-        set_message('Player ' + player + " its your turn");
+        
         end_turn_button.disabled = true;
         set_all_rows(false);
         determine_next_player();
+        set_message('Player ' + self.player + " its your turn");
         player_go();
     }
-    var computer_move = function() {
-        //alert('computer moving');
-        computerAI.move();
-    }
+    
     this.update_button = function() {
         end_turn_button.disabled = (start_turn_checked == 0);
-        if (start_turn_checked < 0) { 
-           // alert("Less than 0 checked in your turn. This shouldn't be possible")
-            }
     }
     var setup_board = function() {
         var rows = new Array();
@@ -90,22 +80,16 @@ function Nim(player1, player2) {
             var id = "row-" + i;
             row.setAttribute("id", id);
             row.setAttribute("class", "heap");
-            nim_objects[i] = new Array();
+            self.nim_objects[i] = new Array();
             for ( var j = 0; j < rows[i]; j++) {
                 var obj = document.createElement('input');
-                nim_objects[i][j] = obj;
+                self.nim_objects[i][j] = obj;
                 obj.setAttribute('type', 'checkbox');
-                obj.controller=this;
                 obj.className = 'checkbox'
                 obj.row = i;
                 obj.permanent = false;
                 row.appendChild(obj);
-                $(obj).bind("click", function() { this.controller.clickHandle(this)})
-                /*
-                obj.onclick = function() {
-                    clickHandle(this);
-                };*/
-
+                $(obj).bind("click", function() { self.clickHandle(this)})
             }
             board.appendChild(row);
         }
@@ -115,7 +99,7 @@ function Nim(player1, player2) {
     }
     /* execute a function on each element of the row */
     this.row_map = function(row, func) {
-        nim_objects[row].forEach(function(el,index,array) {
+    	self.nim_objects[row].forEach(function(el,index,array) {
             func(el);
         });
     }
@@ -136,7 +120,7 @@ function Nim(player1, player2) {
     this.clickHandle = function(el) {
         if (!el.checked) {
             start_turn_checked--;
-            if (!this.row_contains_checked_items(el.row)) {
+            if (!self.row_contains_checked_items(el.row)) {
                 set_all_rows(false);
             }
             update_button();
@@ -170,9 +154,9 @@ function Nim(player1, player2) {
         }
     }
     var all_heaps_checked = function() {
-        nim_objects.forEach(function(element, index, array) {
-            element.every(function(el,index,array) { return el.checked})
-            });
+    	return self.nim_objects.every(function(element, index, array) {
+            return element.every(function(el,index,array) { return el.checked})
+         });
     }
        
     var set_message = function(message)  {
@@ -183,7 +167,9 @@ function Nim(player1, player2) {
     }
     // Prints a message in the message div with id of 'message-box'
     this.set_message = function(message) {
-        document.getElementById('message-box').innerHTML = message;
+   
+    	document.getElementById('message-box').innerHTML = message;
     }
+    /* start the game up */
     init();
 }
