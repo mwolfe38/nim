@@ -29,9 +29,12 @@ function Nim(player1, player2) {
         player_go();
     }
     this.display_winning_message = function() {
-    	alert('ok')
         var url = "#TB_inline?height=65&amp;width=300&amp;inlineId=winnerMessage"
-        $('#winnerMessage').html('<div id="message-popup"><h1>Player ' + self.player + ' Wins!!</h1><br /><a onclick="tb_remove();">Close</a></div>');
+	var msg = self.player + ' Wins!! Good Game, better luck next time player ' + (self.player == 1 ? ' 1' : '2') + ".";
+	if (self.player == 1 && player1 == "computer" || self.player == 2 && player2 == "computer") {
+		msg = "Computer Wins. Better luck next time";
+	}
+        $('#winnerMessage').html('<div id="message-popup">' + msg + '<br /><a onclick="tb_remove();">Close</a></div>');
         tb_show(null, url, null);
     }
     var determine_next_player = function() {
