@@ -28,8 +28,7 @@ function Nim(player1, player2) {
         this.set_message("Player " + self.player + " its your turn");
         player_go();
     }
-    this.display_winning_message = function() {
-    	alert('ok')
+    this.display_winning_message = function() {    	
         var url = "#TB_inline?height=65&amp;width=300&amp;inlineId=winnerMessage"
         $('#winnerMessage').html('<div id="message-popup"><h1>Player ' + self.player + ' Wins!!</h1><br /><a onclick="tb_remove();">Close</a></div>');
         tb_show(null, url, null);
@@ -94,9 +93,10 @@ function Nim(player1, player2) {
             board.appendChild(row);
         }
     }
-    this.row_contains_checked_items = function(row) {
-        return $("#row" + row + " input").is(":checked");
-    }
+    this.row_contains_checked_items = function(row) {        
+        return ($("#row-" + row + " input:checked").size()) > 0;
+    };
+    
     /* execute a function on each element of the row */
     this.row_map = function(row, func) {
     	self.nim_objects[row].forEach(function(el,index,array) {
@@ -129,14 +129,16 @@ function Nim(player1, player2) {
         start_turn_checked++;
         set_other_rows(el.row, true);
         update_button();
-    }
+    };
+  
     var set_other_rows = function(row, disabled) {
         for (var i =0; i< total_heaps; i++) {
             if (i != row) {
                 this.set_row(i, disabled);
             }            
         }
-    }
+    };
+
     var set_checkboxes_permanent = function() {
         for ( var i = 0; i < total_heaps; i++) {
             this.row_map(i, function(element) {
@@ -144,32 +146,34 @@ function Nim(player1, player2) {
                     element.permanent = true;
                     element.disabled = true;
                 }
-            })
+            });
         }
-    }
+    };
 	
     var set_all_rows = function(disabled) {
         for ( var i = 0; i < total_heaps; i++) {
             set_row(i, disabled)
         }
-    }
+    };
+
     var all_heaps_checked = function() {
     	return self.nim_objects.every(function(element, index, array) {
             return element.every(function(el,index,array) { return el.checked})
          });
-    }
+    };
        
     var set_message = function(message)  {
         this.set_message(message);
-    }
+    };
+
     this.append_message = function(message) {
         document.getElementById('message-box').innerHTML += message;
-    }
+    };
+
     // Prints a message in the message div with id of 'message-box'
-    this.set_message = function(message) {
-   
+    this.set_message = function(message) {   
     	document.getElementById('message-box').innerHTML = message;
-    }
+    };
     /* start the game up */
     init();
 }
