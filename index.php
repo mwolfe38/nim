@@ -21,7 +21,7 @@
                 $("#choose-player-link").click();
             }
             $(document).ready(function() {
-                setTimeout("clickChoosePlayerLink()", 1000);
+                setTimeout("clickChoosePlayerLink()", 800);
             });
         </script>
 
